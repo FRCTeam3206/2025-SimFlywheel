@@ -15,5 +15,5 @@ jobs:
           distribution: 'temurin'
           java-version: 17
       - run: |
-        chmod +x ./gradlew
-        ./gradlew spotlessCheck
+          chmod +x ./gradlew
+          ./gradlew spotlessCheck
