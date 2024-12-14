@@ -23,6 +23,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import java.util.List;
+import java.util.function.DoubleSupplier;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -45,15 +46,10 @@ public class RobotContainer {
 
     // Configure default commands
     m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
         m_robotDrive.driveCommand(
-            () ->
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-            () ->
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-            () ->
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+            adjustJoystick(m_driverController::getLeftY, true),
+            adjustJoystick(m_driverController::getLeftX, true),
+            adjustJoystick(m_driverController::getRightX, true),
             () -> true));
   }
 
@@ -65,6 +61,17 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     m_driverController.x().whileTrue(m_robotDrive.setXCommand());
+  }
+
+  private DoubleSupplier adjustJoystick(DoubleSupplier input, boolean negate) {
+    return () -> {
+      double value = input.getAsDouble();
+      if (negate) {
+        value = -value;
+      }
+      value = MathUtil.applyDeadband(value, OIConstants.kDriveDeadband);
+      return value;
+    };
   }
 
   /**
