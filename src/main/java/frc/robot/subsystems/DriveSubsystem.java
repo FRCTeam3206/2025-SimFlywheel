@@ -12,8 +12,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -177,5 +180,32 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+  }
+
+  /**
+   * Command for driving the robot using joystick info.
+   *
+   * @param xSpeed Speed of the robot in the x direction (forward).
+   * @param ySpeed Speed of the robot in the y direction (sideways).
+   * @param rot Angular rate of the robot.
+   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
+   */
+  public Command driveCommand(
+      DoubleSupplier xSpeed,
+      DoubleSupplier ySpeed,
+      DoubleSupplier rot,
+      BooleanSupplier fieldRelative) {
+    return run(
+        () ->
+            drive(
+                xSpeed.getAsDouble(),
+                ySpeed.getAsDouble(),
+                rot.getAsDouble(),
+                fieldRelative.getAsBoolean()));
+  }
+
+  /** Command to set the wheels into an X formation to prevent movement. */
+  public Command setXCommand() {
+    return run(this::setX);
   }
 }
