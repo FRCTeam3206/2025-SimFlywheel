@@ -66,6 +66,13 @@ public class RobotContainer {
     m_driverController.y().onTrue(new InstantCommand(() -> m_fieldRelative = !m_fieldRelative));
   }
 
+  /**
+   * Apply desired adjustments to a joystick input, such as deadbanding and nonlinear transforms.
+   *
+   * @param input The input value from the joystick
+   * @param negate Whether to invert the input
+   * @return The adjusted value from the joystick
+   */
   private DoubleSupplier adjustJoystick(DoubleSupplier input, boolean negate) {
     return () -> {
       double value = input.getAsDouble();
