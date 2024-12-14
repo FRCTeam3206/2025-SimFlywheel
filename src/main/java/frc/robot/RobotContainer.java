@@ -15,6 +15,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -34,6 +35,7 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private boolean m_fieldRelative = true;
 
   // The driver's controller
   CommandXboxController m_driverController =
@@ -50,7 +52,7 @@ public class RobotContainer {
             adjustJoystick(m_driverController::getLeftY, true),
             adjustJoystick(m_driverController::getLeftX, true),
             adjustJoystick(m_driverController::getRightX, true),
-            () -> true));
+            () -> m_fieldRelative));
   }
 
   /**
@@ -61,6 +63,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     m_driverController.x().whileTrue(m_robotDrive.setXCommand());
+    m_driverController.y().onTrue(new InstantCommand(() -> m_fieldRelative = !m_fieldRelative));
   }
 
   private DoubleSupplier adjustJoystick(DoubleSupplier input, boolean negate) {
