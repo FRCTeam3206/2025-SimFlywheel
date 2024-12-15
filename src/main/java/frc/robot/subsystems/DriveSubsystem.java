@@ -61,6 +61,14 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
           });
 
+  SwerveModuleState[] m_states =
+      new SwerveModuleState[] {
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState()
+      };
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {}
 
@@ -75,6 +83,14 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
         });
+
+    m_states =
+        new SwerveModuleState[] {
+          m_frontLeft.getState(),
+          m_frontRight.getState(),
+          m_rearLeft.getState(),
+          m_rearRight.getState(),
+        };
   }
 
   /**
