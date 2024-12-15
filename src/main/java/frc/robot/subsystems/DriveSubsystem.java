@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.studica.frc.AHRS;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -18,6 +19,7 @@ import frc.robot.Constants.DriveConstants;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+@Logged
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft =
@@ -59,6 +61,14 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
           });
 
+  SwerveModuleState[] m_states =
+      new SwerveModuleState[] {
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState()
+      };
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {}
 
@@ -73,6 +83,14 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
         });
+
+    m_states =
+        new SwerveModuleState[] {
+          m_frontLeft.getState(),
+          m_frontRight.getState(),
+          m_rearLeft.getState(),
+          m_rearRight.getState(),
+        };
   }
 
   /**
