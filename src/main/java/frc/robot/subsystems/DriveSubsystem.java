@@ -70,13 +70,7 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModuleState()
       };
 
-  SwerveModuleState[] m_statesRequested =
-      new SwerveModuleState[] {
-        new SwerveModuleState(),
-        new SwerveModuleState(),
-        new SwerveModuleState(),
-        new SwerveModuleState()
-      };
+  SwerveModuleState[] m_statesRequested = m_statesMeasured;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {}
