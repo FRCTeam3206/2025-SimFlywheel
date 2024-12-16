@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.studica.frc.AHRS;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -49,8 +50,9 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
+  @NotLogged
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry =
+  private SwerveDriveOdometry m_odometry =
       new SwerveDriveOdometry(
           DriveConstants.kDriveKinematics,
           m_gyro.getRotation2d(),
@@ -61,12 +63,29 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
           });
 
-  SwerveModuleState[] m_states =
+  SwerveModuleState[] m_statesMeasured =
       new SwerveModuleState[] {
         new SwerveModuleState(),
         new SwerveModuleState(),
         new SwerveModuleState(),
         new SwerveModuleState()
+      };
+
+  SwerveModuleState[] m_statesRequested =
+      new SwerveModuleState[] {
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState()
+      };
+
+  @NotLogged
+  private static final SwerveModuleState[] m_statesX =
+      new SwerveModuleState[] {
+        new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(45))
       };
 
   /** Creates a new DriveSubsystem. */
@@ -84,7 +103,7 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
         });
 
-    m_states =
+    m_statesMeasured =
         new SwerveModuleState[] {
           m_frontLeft.getState(),
           m_frontRight.getState(),
@@ -142,18 +161,12 @@ public class DriveSubsystem extends SubsystemBase {
                 : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    m_frontLeft.setDesiredState(swerveModuleStates[0]);
-    m_frontRight.setDesiredState(swerveModuleStates[1]);
-    m_rearLeft.setDesiredState(swerveModuleStates[2]);
-    m_rearRight.setDesiredState(swerveModuleStates[3]);
+    setModuleStates(swerveModuleStates);
   }
 
   /** Sets the wheels into an X formation to prevent movement. */
   public void setX() {
-    m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-    m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+    setModuleStates(m_statesX);
   }
 
   /**
@@ -162,12 +175,11 @@ public class DriveSubsystem extends SubsystemBase {
    * @param desiredStates The desired SwerveModule states.
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(desiredStates[0]);
     m_frontRight.setDesiredState(desiredStates[1]);
     m_rearLeft.setDesiredState(desiredStates[2]);
     m_rearRight.setDesiredState(desiredStates[3]);
+    m_statesRequested = desiredStates;
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
