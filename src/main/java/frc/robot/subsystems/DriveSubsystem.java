@@ -70,10 +70,13 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModuleState()
       };
 
+  @SuppressWarnings("unused")
   private SwerveModuleState[] m_statesRequested = m_statesMeasured;
 
+  @SuppressWarnings("unused")
   private ChassisSpeeds m_speedsMeasured = new ChassisSpeeds();
 
+  @SuppressWarnings("unused")
   private ChassisSpeeds m_speedsRequested = new ChassisSpeeds();
 
   /** Creates a new DriveSubsystem. */
