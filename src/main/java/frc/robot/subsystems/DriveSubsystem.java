@@ -8,7 +8,6 @@ import com.studica.frc.AHRS;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -50,8 +49,8 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
-  @NotLogged
   // Odometry class for tracking robot pose
+  @NotLogged // everything in here is already logged by modules or getPose()
   private SwerveDriveOdometry m_odometry =
       new SwerveDriveOdometry(
           DriveConstants.kDriveKinematics,
@@ -77,15 +76,6 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModuleState(),
         new SwerveModuleState(),
         new SwerveModuleState()
-      };
-
-  @NotLogged
-  private static final SwerveModuleState[] m_statesX =
-      new SwerveModuleState[] {
-        new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
-        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
-        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
-        new SwerveModuleState(0, Rotation2d.fromDegrees(45))
       };
 
   /** Creates a new DriveSubsystem. */
@@ -166,7 +156,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Sets the wheels into an X formation to prevent movement. */
   public void setX() {
-    setModuleStates(m_statesX);
+    setModuleStates(DriveConstants.kStatesX);
   }
 
   /**
