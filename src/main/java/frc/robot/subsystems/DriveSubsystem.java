@@ -62,7 +62,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
           });
 
-  SwerveModuleState[] m_statesMeasured =
+  private SwerveModuleState[] m_statesMeasured =
       new SwerveModuleState[] {
         new SwerveModuleState(),
         new SwerveModuleState(),
@@ -70,7 +70,11 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModuleState()
       };
 
-  SwerveModuleState[] m_statesRequested = m_statesMeasured;
+  private SwerveModuleState[] m_statesRequested = m_statesMeasured;
+
+  private ChassisSpeeds m_speedsMeasured = new ChassisSpeeds();
+
+  private ChassisSpeeds m_speedsRequested = new ChassisSpeeds();
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {}
@@ -94,6 +98,8 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearLeft.getState(),
           m_rearRight.getState(),
         };
+
+    m_speedsMeasured = DriveConstants.kDriveKinematics.toChassisSpeeds(m_statesMeasured);
   }
 
   /**
@@ -164,6 +170,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearLeft.setDesiredState(desiredStates[2]);
     m_rearRight.setDesiredState(desiredStates[3]);
     m_statesRequested = desiredStates;
+    m_speedsRequested = DriveConstants.kDriveKinematics.toChassisSpeeds(desiredStates);
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
