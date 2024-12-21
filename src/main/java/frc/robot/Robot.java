@@ -60,7 +60,9 @@ public class Robot extends TimedRobot {
    */
   private void configureButtonBindings() {
     // On POV up, set the flywheel to run at 1/2 free speed of motor
-    m_driverController.povUp().onTrue(m_flywheel.setRPMCommand(FlywheelConstants.kFreeSpeedRpm / 2));
+    m_driverController
+        .povUp()
+        .onTrue(m_flywheel.setRPMCommand(FlywheelConstants.kFreeSpeedRpm / 2));
     // On POV down, stop driving the flywheel and let it coast
     m_driverController.povDown().onTrue(m_flywheel.stopCommand());
   }

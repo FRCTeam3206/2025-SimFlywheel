@@ -30,8 +30,7 @@ import java.util.function.DoubleSupplier;
 
 @Logged
 public class FlywheelSubsystem extends SubsystemBase {
-  @NotLogged
-  private double m_desiredRpm = 0;
+  @NotLogged private double m_desiredRpm = 0;
 
   private final SparkMax m_sparkMax =
       new SparkMax(FlywheelConstants.kFlywheelCanId, MotorType.kBrushless);
